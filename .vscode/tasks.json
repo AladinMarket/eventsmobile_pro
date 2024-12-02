@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Format All the Dart in Lib & Test Folder",
+            "type": "shell",
+            "command": "dart",
+            "args": [
+                "format",
+                "--set-exit-if-changed",
+                "lib/",  // Example: Change "lib/" to your actual directory containing Dart files
+                "test/"  // Example: Change "test/" to your actual test directory if applicable
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

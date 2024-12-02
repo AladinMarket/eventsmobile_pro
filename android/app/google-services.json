@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "683332563891",
+    "project_id": "aladin-events",
+    "storage_bucket": "aladin-events.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683332563891:android:5ba782269508ce746651c6",
+        "android_client_info": {
+          "package_name": "com.events.orgs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683332563891-f8qfu3thbddf06idacc1hvgd49pnfeas.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.events.orgs",
+            "certificate_hash": "59be50de705d7f4ce6b5862c85637eec3ab54f3f"
+          }
+        },
+        {
+          "client_id": "683332563891-iip7jtces54ivre1r3bdp5uc935ltt48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyukcXUr7xy2q6EBdHMtueNQxdVUXG_fg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683332563891-5l5841h3rhpnou14g4ak0839sjfdde19.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "683332563891-mt9nausj4n4ctrg849r5ipacivmd3ic9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.events.orgs"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683332563891:android:8426e6e83f76b58c6651c6",
+        "android_client_info": {
+          "package_name": "com.events.users"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683332563891-66k72hpekkoelue18udt2j2ob2d3jeas.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.events.users",
+            "certificate_hash": "59be50de705d7f4ce6b5862c85637eec3ab54f3f"
+          }
+        },
+        {
+          "client_id": "683332563891-iip7jtces54ivre1r3bdp5uc935ltt48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyukcXUr7xy2q6EBdHMtueNQxdVUXG_fg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683332563891-5l5841h3rhpnou14g4ak0839sjfdde19.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "683332563891-mt9nausj4n4ctrg849r5ipacivmd3ic9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.events.orgs"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
