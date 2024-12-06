@@ -11,10 +11,13 @@ import 'package:eventright_pro_user/constant/preferences.dart';
 import 'package:eventright_pro_user/localization/localization_constant.dart';
 import 'package:eventright_pro_user/provider/ticket_provider.dart';
 import 'package:eventright_pro_user/screens/coupon_screen.dart';
+import 'package:eventright_pro_user/screens/payment_form_widget.dart';
 import 'package:eventright_pro_user/screens/payment_gateway_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +41,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
   double discountAmount = 0;
   int couponID=0;
   String couponCode = '';
-
+  int _selectedPayment = 0;
   // ignore: prefer_typing_uninitialized_variables
   var result;
 
@@ -515,7 +518,8 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
               CommonFunction.toastMessage("Please select ticket date");
             }
             else{
-              Navigator.push(
+              paymentSheett();
+             /* Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => PaymentGateway(
@@ -530,7 +534,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                     couponId: couponID,
                   ),
                 ),
-              );
+              );*/
             }
           }
         },
@@ -573,5 +577,262 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
         }
       });
     }
+  }
+
+
+  Future paymentSheett() {
+    return showModalBottomSheet(
+      backgroundColor:  const Color(0xffFFFFFF),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 10),
+                      Center(
+                        child: Container(
+                          height: Get.height / 80,
+                          width: Get.width / 5,
+                          decoration: const BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                        ),
+                      ),
+                      SizedBox(height: Get.height / 50),
+                      Row(children: [
+                        SizedBox(width: Get.width / 14),
+                        const Text("Select Payment Method",
+                            style: TextStyle(
+                                color: Color(0xff000000),
+                                fontSize: 15,
+                                fontFamily:"Ubuntu Light")),
+                      ]),
+                      SizedBox(height: Get.height / 50),
+                      //! --------- List view paymente ----------
+                      // Variable pour suivre la sélection
+
+                      SizedBox(
+                        height: Get.height * 0.30,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: sugestlocationtype(
+                                borderColor: _selectedPayment == 0
+                                    ? Color(0xff2f6ee6)
+                                    : const Color(0xffD6D6D6),
+                                title: "Orange Money",
+                                titleColor: const Color(0xff000000),
+                                val: 0,
+                                image:'assets/orangemoney.png',
+                                adress: "Payer directement avec Orange Money",
+                                ontap: () {
+                                  setState(() {
+                                    _selectedPayment = 0;
+
+                                  });
+                                },
+                                radio: Radio(
+                                  activeColor: Color(0xff2f6ee6),
+                                  value: 0,
+                                  groupValue: _selectedPayment,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedPayment = value as int;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: sugestlocationtype(
+                                borderColor: _selectedPayment == 1
+                                    ? const Color(0xff2f6ee6)
+                                    : const Color(0xffD6D6D6),
+                                title: "Moov Money",
+                                titleColor: const Color(0xff000000),
+                                val: 1,
+                                image:'assets/moovmoney.png',
+                                adress: "Payer directement avec Moov Money",
+                                ontap: () {
+                                  setState(() {
+                                    _selectedPayment = 1;
+
+                                  });
+                                },
+                                radio: Radio(
+                                  activeColor: Color(0xff2f6ee6),
+                                  value: 1,
+                                  groupValue: _selectedPayment,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedPayment = value as int;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        height: 80,
+                        width: Get.size.width,
+                        alignment: Alignment.center,
+                        child: GestButton(
+                          Width: Get.size.width,
+                          height: 50,
+                          buttoncolor: Color(0xff2f6ee6),
+                          margin: EdgeInsets.only(top: 10, left: 30, right: 30),
+                          buttontext: "Continue",
+                          style: TextStyle(
+                            fontFamily: "Ubuntu Light",
+                            color: const Color(0xffFFFFFF),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          onclick: () async {
+
+                            if(_selectedPayment == 1){
+                              Get.to( PaymentFormWidget(paymentMethod: 'moovMoney',mTotal: totalAmount.round().toString(),));
+                            }else{
+                              Get.to(PaymentFormWidget(paymentMethod: 'orangeMoney',mTotal: totalAmount.round().toString()));
+                            }
+                            //!---- Stripe Payment ------
+                          },
+                        ),
+                        decoration: BoxDecoration(
+                          color:const Color(0xffFFFFFF),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+          ],
+        );
+      },
+    );
+  }
+  Widget sugestlocationtype(
+      {Function()? ontap,
+        title,
+        val,
+        image,
+        adress,
+        radio,
+        Color? borderColor,
+        Color? titleColor}) {
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return InkWell(
+            splashColor: Colors.transparent,
+            onTap: ontap,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: Get.width / 18),
+              child: Container(
+                height: Get.height / 10,
+                decoration: BoxDecoration(
+                    border: Border.all(color: borderColor!, width: 1),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(11)),
+                child: Row(
+                  children: [
+                    SizedBox(width: Get.width / 55),
+                    Container(
+                        height: Get.height / 12,
+                        width: Get.width / 5.5,
+                        decoration: BoxDecoration(
+                            color: const Color(0xffF2F4F9),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: FadeInImage(
+                              placeholder: const AssetImage("assets/loading2.gif"),
+                              image: AssetImage(image)),
+                          // Image.network(image, height: Get.height / 08)
+                        )),
+                    SizedBox(width: Get.width / 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: Get.height * 0.01),
+                        Text(title,
+                            style: TextStyle(
+                              fontSize: Get.height / 55,
+                              fontFamily:"Ubuntu Light",
+                              color: titleColor,
+                            )),
+                        SizedBox(
+                          width: Get.width * 0.50,
+                          child: Text(adress,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: Get.height / 65,
+                                  fontFamily: 'Gilroy_Medium',
+                                  color: Colors.grey)),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    radio
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+  GestButton({
+    String? buttontext,
+    Function()? onclick,
+    double? Width,
+    double? height,
+    Color? buttoncolor,
+    EdgeInsets? margin,
+    TextStyle? style,
+  }) {
+    return GestureDetector(
+      onTap: onclick,
+      child: Container(
+        height: height,
+        width: Width,
+        // margin: EdgeInsets.only(top: 15, left: 30, right: 30),
+        margin: margin,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(35),
+          // color: buttoncolor,
+          gradient: const LinearGradient(
+            colors: [Color(0xff2f6ee6), Color(0xff2f6ee6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: const Offset(
+                0.5,
+                0.5,
+              ),
+              blurRadius: 1,
+            ),
+          ],
+        ),
+        child: Text(buttontext!, style: style),
+      ),
+    );
   }
 }
