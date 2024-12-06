@@ -41,7 +41,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
   double discountAmount = 0;
   int couponID=0;
   String couponCode = '';
-  int _selectedPayment = 0;
+
   // ignore: prefer_typing_uninitialized_variables
   var result;
 
@@ -581,6 +581,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
 
 
   Future paymentSheett() {
+    int _selectedPayment = 0;
     return showModalBottomSheet(
       backgroundColor:  const Color(0xffFFFFFF),
       isScrollControlled: true,
