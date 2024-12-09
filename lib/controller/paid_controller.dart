@@ -1,9 +1,10 @@
+import 'package:eventright_pro_user/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
+
 ///import 'package:http_auth/http_auth.dart';
 import 'package:http/http.dart' as http;
-
 
 class PaidController extends GetxController {
   TextEditingController number = TextEditingController();
@@ -14,8 +15,6 @@ class PaidController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
   RxBool getLoading = false.obs;
-
-
 
   String? numberValidator(String? value) {
     if (value!.isEmpty) {
@@ -46,27 +45,20 @@ class PaidController extends GetxController {
     const url = 'https://events.aladinmarket-bf.com/api/orange_money/payment';
     final header = {"Content-Type": "application/json; charset=UTF-8"};
     try {
-      final response =
-          await http.post(Uri.parse(url), body: data, headers: header);
+      final response = await http.post(Uri.parse(url),
+          body: jsonEncode(data), headers: header);
       final responseData = jsonDecode(response.body);
+
       if (responseData['status'] == 'SUCCESSFUL') {
         // tout autre traitement ici comme le recu etc
         await customSuccessDialog();
-
       } else {
-        Get.snackbar(
-          "Échec du paiement",
-          "Le paiement n'a pas pu être complété. Veuillez réessayer.",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        showCustomErrorSnackbar("Échec du paiement",
+            "${responseData['detailMessage']}");
       }
     } catch (e) {
       var errorMessage = e.toString();
-      Get.snackbar(
-        "Erreur",
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showCustomErrorSnackbar("Erreur", errorMessage);
     } finally {
       getLoading.value = false;
     }
@@ -87,27 +79,20 @@ class PaidController extends GetxController {
     const url = 'https://events.aladinmarket-bf.com/api/moov_money/initialise';
     final header = {"Content-Type": "application/json; charset=UTF-8"};
     try {
-      final response =
-          await http.post(Uri.parse(url), body: data, headers: header);
+      final response = await http.post(Uri.parse(url),
+          body: jsonEncode(data), headers: header);
       final responseData = jsonDecode(response.body);
       if (responseData['status'] == 'INITIATED') {
         transactionIdToCheck = responseData['idFromClient'];
         // tout autre traitement ici comme le recu etc
         await customPendingDialog();
       } else {
-        Get.snackbar(
-          "Échec du paiement",
-          "Le paiement n'a pas pu être complété. Veuillez réessayer.",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        showCustomErrorSnackbar("Échec du paiement",
+            "${responseData['detailMessage']}");
       }
     } catch (e) {
       var errorMessage = e.toString();
-      Get.snackbar(
-        "Erreur",
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showCustomErrorSnackbar("Erreur", errorMessage);
     } finally {
       //
     }
@@ -120,27 +105,197 @@ class PaidController extends GetxController {
     try {
       final response = await http.get(Uri.parse(url), headers: header);
       final responseData = jsonDecode(response.body);
+      print(responseData);
       if (responseData['status'] == 'SUCCEED') {
         await customSuccessDialog();
-
       } else {
-        Get.snackbar(
-          "Échec du paiement",
-          "Le paiement n'a pas pu être complété. Veuillez réessayer.",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        showCustomErrorSnackbar("Échec du paiement",
+            "Nous n'avons pas pu vérifier le paiement");
       }
     } catch (e) {
       var errorMessage = e.toString();
-      Get.snackbar(
-        "Erreur",
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showCustomErrorSnackbar("Erreur", errorMessage);
     } finally {
       getLoading.value = false;
     }
-  } //end new
+  }
+
+  void showCustomErrorSnackbar(String title, String message) {
+    navigatorKey.currentState?.overlay?.insert(
+      OverlayEntry(
+        builder: (context) => Positioned(
+          bottom: 50,
+          left: 20,
+          right: 20,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    message,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> customPendingDialog() {
+    return showDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: false,  // Empêche de fermer le dialogue en dehors
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),  // Définir le rayon des coins
+          ),
+          contentPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          title: Container(), // Masquer le titre si non nécessaire
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () {
+                    // Ferme le dialogue et effectue le traitement nécessaire
+                    Navigator.of(context).pop();
+                    // Ici vous pouvez ajouter un autre traitement
+                  },
+                  icon: Icon(Icons.close),
+                ),
+              ),
+              const Image(
+                image: AssetImage('assets/images/success.gif'),
+                height: 50,
+                width: 50,
+              ),
+              const Text(
+                "En attente",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 42.0,
+                  color: Colors.black87,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Votre paiement est en attente, veuillez consulter vos messages et cliquer sur le bouton vérifier une fois terminé.",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  validateMoovMoneyPaid();
+                },
+                child: const Text(
+                  "Vérifier",
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> customSuccessDialog() {
+    return showDialog(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: false,  // Empêche de fermer le dialogue en dehors
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),  // Définir le rayon des coins
+          ),
+          contentPadding: EdgeInsets.zero,
+          titlePadding: EdgeInsets.zero,
+          title: Container(), // Masquer le titre si non nécessaire
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () {
+                    // Ferme le dialogue et effectue le traitement nécessaire
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.close),
+                ),
+              ),
+              const Image(
+                image: AssetImage('assets/success.gif'),
+                height: 50,
+                width: 50,
+              ),
+              const Text(
+                "Succès",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 42.0,
+                  color: Colors.black87,
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Votre paiement est effectué avec succès.",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //end new
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   /*  Future<void> validateOrangeMoneyPaid() async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -337,7 +492,7 @@ class PaidController extends GetxController {
     }
   }*/
 
-  Future<void> customPendingDialog() {
+/*  Future<void> customPendingDialog() {
     return Get.defaultDialog(
       title: "",
       titleStyle: TextStyle(fontSize: 0.0),
@@ -440,7 +595,7 @@ class PaidController extends GetxController {
       ),
       radius: 15,
     );
-  }
+  }*/
 
   @override
   void onInit() {

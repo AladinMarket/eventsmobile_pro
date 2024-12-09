@@ -9,6 +9,7 @@ import 'package:eventright_pro_user/constant/common_function.dart';
 import 'package:eventright_pro_user/constant/pref_constants.dart';
 import 'package:eventright_pro_user/constant/preferences.dart';
 import 'package:eventright_pro_user/localization/localization_constant.dart';
+import 'package:eventright_pro_user/main.dart';
 import 'package:eventright_pro_user/provider/ticket_provider.dart';
 import 'package:eventright_pro_user/screens/coupon_screen.dart';
 import 'package:eventright_pro_user/screens/payment_form_widget.dart';
@@ -581,6 +582,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
 
   Future paymentSheett() {
     int _selectedPayment = 0;
+    final size = MediaQuery.of(context).size;
     return showModalBottomSheet(
       backgroundColor:  const Color(0xffFFFFFF),
       isScrollControlled: true,
@@ -592,6 +594,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
       ),
       context: context,
       builder: (context) {
+
         return Wrap(
           children: [
             StatefulBuilder(
@@ -599,31 +602,31 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Center(
                         child: Container(
-                          height: Get.height / 80,
-                          width: Get.width / 5,
+                          height: size.height / 80,
+                          width: size.width / 5,
                           decoration: const BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.all(Radius.circular(20))),
                         ),
                       ),
-                      SizedBox(height: Get.height / 50),
+                      SizedBox(height: size.height / 50),
                       Row(children: [
-                        SizedBox(width: Get.width / 14),
+                        SizedBox(width: size.width / 14),
                         const Text("Select Payment Method",
                             style: TextStyle(
                                 color: Color(0xff000000),
                                 fontSize: 15,
                                 fontFamily:"Ubuntu Light")),
                       ]),
-                      SizedBox(height: Get.height / 50),
+                      SizedBox(height: size.height / 50),
                       //! --------- List view paymente ----------
                       // Variable pour suivre la sélection
 
                       SizedBox(
-                        height: Get.height * 0.30,
+                        height: size.height * 0.30,
                         child: Column(
                           children: [
                             Padding(
@@ -635,7 +638,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                                 title: "Orange Money",
                                 titleColor: const Color(0xff000000),
                                 val: 0,
-                                image:'assets/orangemoney.png',
+                                image:'assets/images/orangemoney.png',
                                 adress: "Payer directement avec Orange Money",
                                 ontap: () {
                                   setState(() {
@@ -664,7 +667,7 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                                 title: "Moov Money",
                                 titleColor: const Color(0xff000000),
                                 val: 1,
-                                image:'assets/moovmoney.png',
+                                image:'assets/images/moovmoney.png',
                                 adress: "Payer directement avec Moov Money",
                                 ontap: () {
                                   setState(() {
@@ -690,10 +693,10 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
 
                       Container(
                         height: 80,
-                        width: Get.size.width,
+                        width: size.width,
                         alignment: Alignment.center,
                         child: GestButton(
-                          Width: Get.size.width,
+                          Width: size.width,
                           height: 50,
                           buttoncolor: Color(0xff2f6ee6),
                           margin: EdgeInsets.only(top: 10, left: 30, right: 30),
@@ -705,12 +708,28 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                             fontWeight: FontWeight.bold,
                           ),
                           onclick: () async {
-
-                            if(_selectedPayment == 1){
-                              Get.to( PaymentFormWidget(paymentMethod: 'moovMoney',mTotal: totalAmount.round().toString(),));
-                            }else{
-                              Get.to(PaymentFormWidget(paymentMethod: 'orangeMoney',mTotal: totalAmount.round().toString()));
+                            if (_selectedPayment == 1) {
+                              // Use the navigatorKey to perform navigation manually
+                              navigatorKey.currentState?.push(
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentFormWidget(
+                                    paymentMethod: 'moovMoney',
+                                    mTotal: totalAmount.round().toString(),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Use the navigatorKey to perform navigation manually
+                              navigatorKey.currentState?.push(
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentFormWidget(
+                                    paymentMethod: 'orangeMoney',
+                                    mTotal: totalAmount.round().toString(),
+                                  ),
+                                ),
+                              );
                             }
+
                             //!---- Stripe Payment ------
                           },
                         ),
@@ -735,52 +754,53 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
         radio,
         Color? borderColor,
         Color? titleColor}) {
+    final size = MediaQuery.of(context).size;
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return InkWell(
             splashColor: Colors.transparent,
             onTap: ontap,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: Get.width / 18),
+              padding: EdgeInsets.symmetric(horizontal: size.width / 18),
               child: Container(
-                height: Get.height / 10,
+                height: size.height / 10,
                 decoration: BoxDecoration(
                     border: Border.all(color: borderColor!, width: 1),
                     color: Colors.transparent,
                     borderRadius: BorderRadius.circular(11)),
                 child: Row(
                   children: [
-                    SizedBox(width: Get.width / 55),
+                    SizedBox(width: size.width / 55),
                     Container(
-                        height: Get.height / 12,
-                        width: Get.width / 5.5,
+                        height: size.height / 12,
+                        width: size.width / 5.5,
                         decoration: BoxDecoration(
                             color: const Color(0xffF2F4F9),
                             borderRadius: BorderRadius.circular(10)),
                         child: Center(
                           child: FadeInImage(
-                              placeholder: const AssetImage("assets/loading2.gif"),
+                              placeholder: const AssetImage("assets/images/loading2.gif"),
                               image: AssetImage(image)),
-                          // Image.network(image, height: Get.height / 08)
+                          // Image.network(image, height: size.height / 08)
                         )),
-                    SizedBox(width: Get.width / 30),
+                    SizedBox(width: size.width / 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: Get.height * 0.01),
+                        SizedBox(height: size.height * 0.01),
                         Text(title,
                             style: TextStyle(
-                              fontSize: Get.height / 55,
+                              fontSize: size.height / 55,
                               fontFamily:"Ubuntu Light",
                               color: titleColor,
                             )),
                         SizedBox(
-                          width: Get.width * 0.50,
+                          width: size.width * 0.50,
                           child: Text(adress,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: Get.height / 65,
+                                  fontSize: size.height / 65,
                                   fontFamily: 'Gilroy_Medium',
                                   color: Colors.grey)),
                         ),
