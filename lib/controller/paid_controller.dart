@@ -9,7 +9,6 @@ import 'dart:convert';
 
 ///import 'package:http_auth/http_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 
 class PaidController extends GetxController {
@@ -120,7 +119,7 @@ class PaidController extends GetxController {
     }
   }
 
-  Future<void> validateMoovMoneyPaid() async {
+  Future<void> validateMoovMoneyPaid(BuildContext context) async {
     final url =
         'https://events.aladinmarket-bf.com/api/moov_money/check_status/$transactionIdToCheck';
     final header = {"Content-Type": "application/json; charset=UTF-8"};
@@ -129,6 +128,7 @@ class PaidController extends GetxController {
       final responseData = jsonDecode(response.body);
       print(responseData);
       if (responseData['status'] == 'SUCCEED') {
+        handlePaymentSuccess(context);
         await customSuccessDialog();
       } else {
         showCustomErrorSnackbar("Échec du paiement",
@@ -233,7 +233,7 @@ class PaidController extends GetxController {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  validateMoovMoneyPaid();
+                  validateMoovMoneyPaid(context);
                 },
                 child: const Text(
                   "Vérifier",
