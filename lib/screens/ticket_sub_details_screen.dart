@@ -714,7 +714,15 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                                 MaterialPageRoute(
                                   builder: (context) => PaymentFormWidget(
                                     paymentMethod: 'moovMoney',
-                                    mTotal: totalAmount.round().toString(),
+                                    payment:totalAmount.round().toString(),
+                                    eventId: ticketProvider.ticketEventId,
+                                    quantity: quantity,
+                                    couponDiscount: discountAmount,
+                                    ticketId: ticketProvider.ticketId,
+                                    tax: ticketProvider.totalTax.toDouble(),
+                                    ticketType: ticketProvider.ticketType,
+                                    ticketDate: selectedDateController.text.isNotEmpty?selectedDateController.text:"",
+                                    couponId: couponID,
                                   ),
                                 ),
                               );
@@ -724,7 +732,15 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                                 MaterialPageRoute(
                                   builder: (context) => PaymentFormWidget(
                                     paymentMethod: 'orangeMoney',
-                                    mTotal: totalAmount.round().toString(),
+                                    payment: totalAmount.round().toString(),
+                                    eventId: ticketProvider.ticketEventId,
+                                    quantity: quantity,
+                                    couponDiscount: discountAmount,
+                                    ticketId: ticketProvider.ticketId,
+                                    tax: ticketProvider.totalTax.toDouble(),
+                                    ticketType: ticketProvider.ticketType,
+                                    ticketDate: selectedDateController.text.isNotEmpty?selectedDateController.text:"",
+                                    couponId: couponID,
                                   ),
                                 ),
                               );
@@ -733,8 +749,8 @@ class _TicketSubDetailsState extends State<TicketSubDetails> {
                             //!---- Stripe Payment ------
                           },
                         ),
-                        decoration: BoxDecoration(
-                          color:const Color(0xffFFFFFF),
+                        decoration: const BoxDecoration(
+                          color:Color(0xffFFFFFF),
                         ),
                       ),
                     ],

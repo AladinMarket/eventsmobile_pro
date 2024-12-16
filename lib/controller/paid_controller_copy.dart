@@ -1,37 +1,18 @@
 import 'package:eventright_pro_user/main.dart';
-import 'package:eventright_pro_user/screens/home_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:eventright_pro_user/provider/book_order_provider.dart';
 import 'dart:convert';
-
 
 ///import 'package:http_auth/http_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-
-class PaidController extends GetxController {
+class PaidControllerCopy extends GetxController {
   TextEditingController number = TextEditingController();
   TextEditingController otpCode = TextEditingController();
-  late BookOrderProvider bookOrderProvider;
   String montant = "0";
   String paymentMethod = "";
   String transactionIdToCheck = "";
-  //new variable
-  String payment = '';
-  int? eventId;
-  int? quantity;
-  double? couponDiscount;
-  int? ticketId;
-  double? tax;
-  List? seatDetails;
-  List? bookSeats;
-  String ticketType = '';
-  String? ticketDate;
-  int couponId = 0;
-  String convertedJson = "";
+
   final formKey = GlobalKey<FormState>();
   RxBool getLoading = false.obs;
 
@@ -50,9 +31,8 @@ class PaidController extends GetxController {
   }
 
 // new
-  Future<void> validateOrangeMoneyPaid(BuildContext context) async {
-    handlePaymentSuccess(context);
-   /* if (!formKey.currentState!.validate()) {
+  Future<void> validateOrangeMoneyPaid() async {
+    if (!formKey.currentState!.validate()) {
       return;
     }
     getLoading.value = true;
@@ -81,10 +61,10 @@ class PaidController extends GetxController {
       showCustomErrorSnackbar("Erreur", errorMessage);
     } finally {
       getLoading.value = false;
-    }*/
+    }
   }
 
-  Future<void> initiateMoovMoneyPaid(BuildContext context) async {
+  Future<void> initiateMoovMoneyPaid() async {
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -150,7 +130,7 @@ class PaidController extends GetxController {
           child: Material(
             color: Colors.transparent,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(8),
@@ -160,7 +140,7 @@ class PaidController extends GetxController {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -298,53 +278,6 @@ class PaidController extends GetxController {
         );
       },
     );
-  }
-
-  void handlePaymentSuccess(BuildContext context) async {
-
-    final token = "123456789";
-    if (token.isNotEmpty) {
-
-    }
-    Map<String, dynamic> body = {
-      "event_id": eventId ?? 0,
-      "ticket_id": ticketId ?? 0,
-      "quantity": quantity ?? 0,
-      "coupon_discount": couponDiscount ?? 0.0,
-      "payment": payment,
-      "tax": tax ?? 0.0,
-      "payment_type": "Razorpay",
-      "payment_token": token,
-    };
-    print("====================> $body");
-    if (seatDetails != null) {
-      if (seatDetails!.isNotEmpty) {
-        body['seat_details'] = convertedJson;
-      }
-      if (bookSeats!.isNotEmpty) {
-        body['book_seats'] = bookSeats!.join(',').toString();
-      }
-    }
-
-    if (couponId != 0) {
-      body['coupon_id'] = couponId;
-    }
-
-    if (ticketDate != null) {
-      body['ticket_date'] = ticketDate;
-    }
-
-    if (kDebugMode) {
-      print(body);
-    }
-
-    bookOrderProvider.callApiForBookOrder(body).then((value) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen(index: 1)));
-    });
-
-
-
-
   }
 
   //end new
