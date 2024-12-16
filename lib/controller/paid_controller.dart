@@ -51,8 +51,8 @@ class PaidController extends GetxController {
 
 // new
   Future<void> validateOrangeMoneyPaid(BuildContext context) async {
-    handlePaymentSuccess(context);
-   /* if (!formKey.currentState!.validate()) {
+
+    if (!formKey.currentState!.validate()) {
       return;
     }
     getLoading.value = true;
@@ -71,7 +71,9 @@ class PaidController extends GetxController {
 
       if (responseData['status'] == 'SUCCESSFUL') {
         // tout autre traitement ici comme le recu etc
+        handlePaymentSuccess(context);
         await customSuccessDialog();
+
       } else {
         showCustomErrorSnackbar("Échec du paiement",
             "${responseData['detailMessage']}");
@@ -81,7 +83,7 @@ class PaidController extends GetxController {
       showCustomErrorSnackbar("Erreur", errorMessage);
     } finally {
       getLoading.value = false;
-    }*/
+    }
   }
 
   Future<void> initiateMoovMoneyPaid(BuildContext context) async {
